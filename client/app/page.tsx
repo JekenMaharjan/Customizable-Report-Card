@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Download } from "lucide-react"
+import jsPDF from "jspdf"
+import html2canvas from "html2canvas"
+
 
 interface Subject {
   name: string
@@ -43,53 +46,111 @@ export default function ReportCardPage() {
     }
 
     const downloadPDF = async () => {
-        const original = document.getElementById("report-card-print")
-        if (!original) return
+        const source = document.getElementById("report-card-print")
+        if (!source) return
 
-        // ✅ Clone node
-        const clone = original.cloneNode(true) as HTMLElement
+        // Create iframe
+        const iframe = document.createElement("iframe")
+        iframe.style.position = "fixed"
+        iframe.style.right = "0"
+        iframe.style.bottom = "0"
+        iframe.style.width = "0"
+        iframe.style.height = "0"
+        iframe.style.border = "0"
+        document.body.appendChild(iframe)
 
-        // ✅ Remove ALL class-based styling (Tailwind / shadcn)
-        const all = clone.querySelectorAll("*")
-        all.forEach((el) => {
+        const doc = iframe.contentDocument
+        if (!doc) return
+
+        // Clean HTML wrapper (NO Tailwind, NO globals)
+        doc.open()
+        doc.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8" />
+                <title>Report Card</title>
+                <style>
+                * {
+                    box-sizing: border-box;
+                    font-family: Arial, Helvetica, sans-serif;
+                    color: #000;
+                    background: transparent;
+                }
+                body {
+                    margin: 0;
+                    padding: 24px;
+                    background: #ffffff;
+                }
+                </style>
+            </head>
+            <body></body>
+            </html>
+        `)
+        doc.close()
+
+        // Clone content
+        const clone = source.cloneNode(true) as HTMLElement
+
+        // Remove class attributes
+        clone.querySelectorAll("*").forEach(el => {
             el.removeAttribute("class")
         })
 
-        // ✅ Force safe root styles
-        clone.style.backgroundColor = "#ffffff"
+        clone.style.background = "#ffffff"
         clone.style.color = "#000000"
-        clone.style.padding = "3rem"
 
-        // ✅ Render off-screen
-        const container = document.createElement("div")
-        container.style.position = "fixed"
-        container.style.left = "-9999px"
-        container.appendChild(clone)
-        document.body.appendChild(container)
+        doc.body.appendChild(clone)
 
-        const html2pdf = (await import("html2pdf.js")).default
+        // Render canvas
+        const canvas = await html2canvas(doc.body, {
+            scale: 1.5,
+            backgroundColor: "#ffffff",
+        })
 
-        await html2pdf()
-            .set({
-            margin: 0.5,
-            filename: `report-card-${studentName.replace(/\s+/g, "-")}.pdf`,
-            image: { type: "jpeg", quality: 0.98 },
-            html2canvas: {
-                scale: 2,
-                backgroundColor: "#ffffff",
-            },
-            jsPDF: {
-                unit: "in",
-                format: "letter",
-                orientation: "portrait",
-            },
-            })
-            .from(clone)
-            .save()
+        const imgData = canvas.toDataURL("image/png")
 
-        // 🧹 Cleanup
-        document.body.removeChild(container)
+        // Create PDF
+        const pdf = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: "a4",
+        })
+
+        const pageWidth = 210
+        const pageHeight = 297
+
+        // const pageWidth = pdf.internal.pageSize.getWidth()
+        // const pageHeight = pdf.internal.pageSize.getHeight()
+
+        const imgWidth = pageWidth
+        const imgHeight = (canvas.height * imgWidth) / canvas.width
+
+        // ✅ Center vertically if shorter than A4
+        const y = imgHeight < pageHeight ? (pageHeight - imgHeight) / 2 : 0
+
+        pdf.addImage(imgData, "PNG", 0, y, imgWidth, imgHeight)
+
+        // let position = 0
+        // let heightLeft = imgHeight
+
+        // pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight)
+        // heightLeft -= pageHeight
+
+        // while (heightLeft > 0) {
+        //     position -= pageHeight
+        //     pdf.addPage()
+        //     pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight)
+        //     heightLeft -= pageHeight
+        // }
+
+        pdf.save(`report-card-${studentName.replace(/\s+/g, "-")}.pdf`)
+
+        // Cleanup
+        document.body.removeChild(iframe)
     }
+
+
 
 
     return (
@@ -220,10 +281,12 @@ export default function ReportCardPage() {
                     <div
                         id="report-card-print"
                         style={{
-                        backgroundColor: "#ffffff",
-                        padding: "3rem",
-                        borderRadius: "0.5rem",
-                        border: "1px solid #d1d5db",
+                            width: "794px",          // ✅ A4 width
+                            minHeight: "1123px",     // ✅ A4 height
+                            margin: "0 auto",
+                            backgroundColor: "#ffffff",
+                            padding: "32px",
+                            boxSizing: "border-box",
                         }}
                     >
                         {/* Header */}
@@ -323,7 +386,11 @@ export default function ReportCardPage() {
                                 </thead>
                                 <tbody>
                                     {subjects.map((subject, index) => (
-                                        <tr key={index} style={{ backgroundColor: index % 2 === 0 ? "#f9fafb" : "#ffffff" }}>
+                                        <tr key={index}
+                                        style={{
+                                            backgroundColor: index % 2 === 0 ? "#f9fafb" : "#ffffff",
+                                            pageBreakInside: "avoid", 
+                                            }}>
                                             <td
                                                 style={{
                                                 border: "1px solid #d1d5db",
@@ -369,6 +436,7 @@ export default function ReportCardPage() {
                             marginTop: "4rem",
                             paddingTop: "2rem",
                             borderTop: "1px solid #d1d5db",
+                            pageBreakInside: "avoid",
                         }}
                         >
                             <div style={{ textAlign: "center" }}>
@@ -400,7 +468,7 @@ export default function ReportCardPage() {
                         </div>
 
                         {/*  Footer */}
-                        <div
+                        {/* <div
                         style={{
                             textAlign: "center",
                             marginTop: "2rem",
@@ -411,7 +479,7 @@ export default function ReportCardPage() {
                             <p style={{ fontSize: "0.875rem", color: "#6b7280" }}>
                                 This is an official document. Keep it safe for future reference.
                             </p>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
