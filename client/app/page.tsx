@@ -209,7 +209,7 @@ export default function ReportCardPage() {
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <label className="text-base">Subjects & Grades</label>
-                                <Button onClick={addSubject} size="sm">
+                                <Button className="cursor-pointer" onClick={addSubject} size="sm">
                                     Add Subject
                                 </Button>
                             </div>
@@ -240,7 +240,7 @@ export default function ReportCardPage() {
                                             placeholder="Remarks"
                                         />
                                     </div>
-                                    <Button onClick={() => removeSubject(index)} variant="destructive" size="sm">
+                                    <Button className="cursor-pointer" onClick={() => removeSubject(index)} variant="destructive" size="sm">
                                         Remove
                                     </Button>
                                 </div>
@@ -267,10 +267,10 @@ export default function ReportCardPage() {
                 </Card>
 
                     {/* Preview Section */}
-                    <div className="space-y-4">
-                        <div className="flex justify-between items-center">
+                    <div className="space-y-4 border-2 rounded-lg p-4" style={{ borderColor: "#b4b4b4ff" }}>
+                        <div className="flex justify-between items-center border-b-2 pb-2 mb-4" style={{ borderColor: "#b4b4b4ff" }}>
                             <h2 className="text-2xl font-bold">Preview</h2>
-                            <Button onClick={downloadPDF} className="gap-2">
+                            <Button onClick={downloadPDF} className="gap-2 cursor-pointer">
                             {/* <Button className="gap-2"> */}
                                 <Download className="h-4 w-4" />
                                 Download PDF
@@ -286,7 +286,7 @@ export default function ReportCardPage() {
                             margin: "0 auto",
                             backgroundColor: "#ffffff",
                             padding: "32px",
-                            boxSizing: "border-box",
+                            boxSizing: "border-box"
                         }}
                     >
                         {/* Header */}
@@ -435,7 +435,7 @@ export default function ReportCardPage() {
                             gap: "3rem",
                             marginTop: "4rem",
                             paddingTop: "2rem",
-                            borderTop: "1px solid #d1d5db",
+                            // borderTop: "1px solid #d1d5db",
                             pageBreakInside: "avoid",
                         }}
                         >
