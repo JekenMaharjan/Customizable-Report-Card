@@ -11,6 +11,7 @@ import html2canvas from "html2canvas"
 
 interface Subject {
   name: string
+  creditHour: string
   grade: string
   remarks: string
 }
@@ -22,14 +23,18 @@ export default function ReportCardPage() {
     const [section, setSection] = useState("A")
     const [academicYear, setAcademicYear] = useState("2082")
     const [subjects, setSubjects] = useState<Subject[]>([
-        { name: "Mathematics", grade: "A+", remarks: "Excellent" },
-        { name: "Science", grade: "A", remarks: "Very Good" },
-        { name: "English", grade: "B+", remarks: "Good" },
-        { name: "History", grade: "A", remarks: "Very Good" },
-        { name: "Physical Education", grade: "A+", remarks: "Outstanding" },
+        { name: "Mathematics", creditHour: "3", grade: "A+", remarks: "Excellent" },
+        { name: "Science", creditHour: "3", grade: "A", remarks: "Very Good" },
+        { name: "English", creditHour: "3", grade: "B+", remarks: "Good" },
+        { name: "History", creditHour: "2", grade: "A", remarks: "Very Good" },
+        { name: "Physical Education", creditHour: "1", grade: "A+", remarks: "Outstanding" },
     ])
+    
     const [teacherName, setTeacherName] = useState("Mrs. Smith")
     const [principalName, setPrincipalName] = useState("Dr. Johnson")
+    const [image, setImage] = useState<File | null>(null);
+    const [preview, setPreview] = useState<string | null>(null);
+
 
     const updateSubject = (index: number, field: keyof Subject, value: string) => {
         const newSubjects = [...subjects]
@@ -38,12 +43,20 @@ export default function ReportCardPage() {
     }
 
     const addSubject = () => {
-        setSubjects([...subjects, { name: "", grade: "", remarks: "" }])
+        setSubjects([...subjects, { name: "", creditHour: "", grade: "", remarks: "" }])
     }
 
     const removeSubject = (index: number) => {
         setSubjects(subjects.filter((_, i) => i !== index))
     }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setImage(file);
+        setPreview(URL.createObjectURL(file));
+    };
+
 
     const downloadPDF = async () => {
         const source = document.getElementById("report-card-print")
@@ -225,6 +238,14 @@ export default function ReportCardPage() {
                                         />
                                     </div>
                                     <div className="w-24 space-y-2">
+                                        <label>Credit Hour</label>
+                                        <Input
+                                            value={subject.creditHour}
+                                            onChange={(e) => updateSubject(index, "creditHour", e.target.value)}
+                                            placeholder="3"
+                                        />
+                                    </div>
+                                    <div className="w-24 space-y-2">
                                         <label>Grade</label>
                                         <Input
                                             value={subject.grade}
@@ -250,17 +271,55 @@ export default function ReportCardPage() {
 
                         {/* Teacher & Principal */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium" htmlFor="teacherName">
-                                    Class Teacher Name
-                                </label>
-                                <Input id="teacherName" value={teacherName} onChange={(e) => setTeacherName(e.target.value)} />
+                            {/* Teacher */}
+                            <div className="flex flex-col">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium" htmlFor="teacherName">
+                                        Teacher Name
+                                    </label>
+                                    <Input id="teacherName" value={teacherName} onChange={(e) => setPrincipalName(e.target.value)} />
+                                </div>
+                                <div className="border-2 border-dashed rounded-md p-6 text-center">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleChange}
+                                        className="hidden"
+                                        id="drop-image"
+                                    />
+                                    <label
+                                        htmlFor="drop-image"
+                                        className="cursor-pointer text-sm text-muted-foreground"
+                                    >
+                                        Click to upload or drag & drop
+                                    </label>
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium" htmlFor="principalName">
-                                    Principal Name
-                                </label>
-                                <Input id="principalName" value={principalName} onChange={(e) => setPrincipalName(e.target.value)} />
+                            
+
+                            {/* Principal */}
+                            <div className="flex flex-col">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium" htmlFor="principalName">
+                                        Principal Name
+                                    </label>
+                                    <Input id="principalName" value={principalName} onChange={(e) => setPrincipalName(e.target.value)} />
+                                </div>
+                                <div className="border-2 border-dashed rounded-md p-6 text-center">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleChange}
+                                        className="hidden"
+                                        id="drop-image"
+                                    />
+                                    <label
+                                        htmlFor="drop-image"
+                                        className="cursor-pointer text-sm text-muted-foreground"
+                                    >
+                                        Click to upload or drag & drop
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </CardContent>
@@ -353,10 +412,29 @@ export default function ReportCardPage() {
                                         style={{
                                             border: "1px solid #d1d5db",
                                             padding: "0.75rem 1rem",
+                                            textAlign: "center",
+                                            width: "2rem",
+                                        }}
+                                        >
+                                            S.N.
+                                        </th>
+                                        <th
+                                        style={{
+                                            border: "1px solid #d1d5db",
+                                            padding: "0.75rem 1rem",
                                             textAlign: "left",
                                         }}
                                         >
                                             Subject
+                                        </th>
+                                        <th
+                                        style={{
+                                            border: "1px solid #d1d5db",
+                                            padding: "0.75rem 1rem",
+                                            textAlign: "center",
+                                        }}
+                                        >
+                                            Credit Hour
                                         </th>
                                         <th
                                         style={{
@@ -394,7 +472,28 @@ export default function ReportCardPage() {
                                                 color: "#111827",
                                                 }}
                                             >
+                                                {index + 1}
+                                            </td>
+                                            <td
+                                                style={{
+                                                border: "1px solid #d1d5db",
+                                                padding: "0.75rem 1rem",
+                                                fontWeight: "500",
+                                                color: "#111827",
+                                                }}
+                                            >
                                                 {subject.name}
+                                            </td>
+                                            <td
+                                                style={{
+                                                border: "1px solid #d1d5db",
+                                                padding: "0.75rem 1rem",
+                                                textAlign: "center",
+                                                fontWeight: "bold",
+                                                color: "#111827",
+                                                }}
+                                            >
+                                                {subject.creditHour}
                                             </td>
                                             <td
                                                 style={{
@@ -434,19 +533,37 @@ export default function ReportCardPage() {
                             pageBreakInside: "avoid",
                         }}
                         >
-                            <div style={{ textAlign: "center" }}>
-                                    <div
-                                    style={{
-                                        paddingTop: "0.5rem",
-                                        display: "inline-block",
-                                        minWidth: "200px",
-                                        borderTop: "2px solid #9ca3af",
-                                    }}
-                                    >
-                                        <p style={{ fontWeight: "600", color: "#111827" }}>{teacherName}</p>
-                                        <p style={{ fontSize: "0.875rem", color: "#6b7280" }}>Class Teacher</p>
-                                    </div>
+                            
+
+                            <div style={{ textAlign: "center"}}>
+                                <div style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+                                    {preview && (
+                                        <img
+                                        src={preview}
+                                        alt="Teacher Signature"
+                                        style={{
+                                            display: "flex",
+                                            margin: "0 auto",
+                                            width: "10rem",
+                                            height: "10rem",
+                                            marginBottom: "0.5rem",
+                                        }}
+                                        />
+                                    )}
+                                </div>
+                                <div
+                                style={{
+                                    paddingTop: "0.5rem",
+                                    display: "inline-block",
+                                    minWidth: "200px",
+                                    borderTop: "2px solid #9ca3af",
+                                }}
+                                >
+                                    <p style={{ fontWeight: "600", color: "#111827" }}>{teacherName}</p>
+                                    <p style={{ fontSize: "0.875rem", color: "#6b7280" }}>Class Teacher</p>
+                                </div>
                             </div>
+
                             <div style={{ textAlign: "center" }}>
                                     <div
                                     style={{
