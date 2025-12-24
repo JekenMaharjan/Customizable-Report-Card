@@ -318,7 +318,7 @@ export default function ReportCardPage() {
                             gridTemplateColumns: "repeat(3, 1fr)",
                             // columnGap: "2rem",
                             // rowGap: "1rem",
-                            // marginBottom: "2rem",
+                            marginBottom: "1rem",
                             padding: "1rem",
                             borderRadius: "0.5rem",
                             backgroundColor: "#8d8d8d38",
