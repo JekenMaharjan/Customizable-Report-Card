@@ -16,11 +16,11 @@ interface Subject {
 }
 
 export default function ReportCardPage() {
-    const [studentName, setStudentName] = useState("John Doe")
-    const [rollNumber, setRollNumber] = useState("12345")
-    const [className, setClassName] = useState("Grade 10-A")
-    const [semester, setSemester] = useState("First Semester")
-    const [academicYear, setAcademicYear] = useState("2024-2025")
+    const [studentName, setStudentName] = useState("Ram Kumar")
+    const [rollNumber, setRollNumber] = useState("23")
+    const [className, setClassName] = useState("Seven")
+    const [section, setSection] = useState("A")
+    const [academicYear, setAcademicYear] = useState("2082")
     const [subjects, setSubjects] = useState<Subject[]>([
         { name: "Mathematics", grade: "A+", remarks: "Excellent" },
         { name: "Science", grade: "A", remarks: "Very Good" },
@@ -192,10 +192,10 @@ export default function ReportCardPage() {
                                 <Input id="className" value={className} onChange={(e) => setClassName(e.target.value)} />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium" htmlFor="semester">
-                                Semester
+                                <label className="text-sm font-medium" htmlFor="section">
+                                Section
                                 </label>
-                                <Input id="semester" value={semester} onChange={(e) => setSemester(e.target.value)} />
+                                <Input id="section" value={section} onChange={(e) => setSection(e.target.value)} />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-medium" htmlFor="academicYear">
@@ -315,34 +315,29 @@ export default function ReportCardPage() {
                         <div
                         style={{
                             display: "grid",
-                            gridTemplateColumns: "repeat(2, 1fr)",
-                            columnGap: "2rem",
-                            rowGap: "1rem",
-                            marginBottom: "2rem",
-                            padding: "1.5rem",
+                            gridTemplateColumns: "repeat(3, 1fr)",
+                            // columnGap: "2rem",
+                            // rowGap: "1rem",
+                            // marginBottom: "2rem",
+                            padding: "1rem",
                             borderRadius: "0.5rem",
-                            backgroundColor: "#f9fafb",
+                            backgroundColor: "#8d8d8d38",
                         }}
                         >
                             <div>
-                                <p style={{ fontSize: "0.875rem", fontWeight: "500", color: "#6b7280" }}>Student Name</p>
-                                <p style={{ fontSize: "1.125rem", fontWeight: "600", color: "#111827" }}>{studentName}</p>
+                                <p style={{ fontSize: "1rem", color: "#111827" }}>Name : {studentName}</p>
                             </div>
                             <div>
-                                <p style={{ fontSize: "0.875rem", fontWeight: "500", color: "#6b7280" }}>Roll Number</p>
-                                <p style={{ fontSize: "1.125rem", fontWeight: "600", color: "#111827" }}>{rollNumber}</p>
+                                <p style={{ fontSize: "1rem", color: "#111827" }}>Class : {className}</p>
                             </div>
                             <div>
-                                <p style={{ fontSize: "0.875rem", fontWeight: "500", color: "#6b7280" }}>Class</p>
-                                <p style={{ fontSize: "1.125rem", fontWeight: "600", color: "#111827" }}>{className}</p>
+                                <p style={{ fontSize: "1rem", color: "#111827" }}>Section : {section}</p>
                             </div>
                             <div>
-                                <p style={{ fontSize: "0.875rem", fontWeight: "500", color: "#6b7280" }}>Semester</p>
-                                <p style={{ fontSize: "1.125rem", fontWeight: "600", color: "#111827" }}>{semester}</p>
+                                <p style={{ fontSize: "1rem", color: "#111827" }}>Roll Number : {rollNumber}</p>
                             </div>
-                            <div style={{ gridColumn: "span 2" }}>
-                                <p style={{ fontSize: "0.875rem", fontWeight: "500", color: "#6b7280" }}>Academic Year</p>
-                                <p style={{ fontSize: "1.125rem", fontWeight: "600", color: "#111827" }}>{academicYear}</p>
+                            <div>
+                                <p style={{ fontSize: "1rem", color: "#111827" }}>Academic Year : {academicYear}</p>
                             </div>
                         </div>
 
