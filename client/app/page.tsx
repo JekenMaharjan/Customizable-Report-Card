@@ -32,8 +32,8 @@ export default function ReportCardPage() {
     
     const [teacherName, setTeacherName] = useState("Mrs. Smith")
     const [principalName, setPrincipalName] = useState("Dr. Johnson")
-    const [image, setImage] = useState<File | null>(null);
-    const [preview, setPreview] = useState<string | null>(null);
+    const [teacherSign, setTeacherSign] = useState<string | null>(null);
+    const [principalSign, setPrincipalSign] = useState<string | null>(null);
 
 
     const updateSubject = (index: number, field: keyof Subject, value: string) => {
@@ -50,11 +50,16 @@ export default function ReportCardPage() {
         setSubjects(subjects.filter((_, i) => i !== index))
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleTeacherSign = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setImage(file);
-        setPreview(URL.createObjectURL(file));
+        setTeacherSign(URL.createObjectURL(file));
+    };
+
+    const handlePrincipalSign = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setPrincipalSign(URL.createObjectURL(file));
     };
 
 
@@ -283,12 +288,12 @@ export default function ReportCardPage() {
                                     <input
                                         type="file"
                                         accept="image/*"
-                                        onChange={handleChange}
+                                        onChange={handleTeacherSign}
                                         className="hidden"
-                                        id="drop-image"
+                                        id="teacher-sign"
                                     />
                                     <label
-                                        htmlFor="drop-image"
+                                        htmlFor="teacher-sign"
                                         className="cursor-pointer text-sm text-muted-foreground"
                                     >
                                         Click to upload or drag & drop
@@ -309,12 +314,12 @@ export default function ReportCardPage() {
                                     <input
                                         type="file"
                                         accept="image/*"
-                                        onChange={handleChange}
+                                        onChange={handlePrincipalSign}
                                         className="hidden"
-                                        id="drop-image"
+                                        id="principal-sign"
                                     />
                                     <label
-                                        htmlFor="drop-image"
+                                        htmlFor="principal-sign"
                                         className="cursor-pointer text-sm text-muted-foreground"
                                     >
                                         Click to upload or drag & drop
@@ -537,9 +542,9 @@ export default function ReportCardPage() {
 
                             <div style={{ textAlign: "center"}}>
                                 <div style={{ textAlign: "center", marginBottom: "0.5rem" }}>
-                                    {preview && (
+                                    {teacherSign && (
                                         <img
-                                        src={preview}
+                                        src={teacherSign}
                                         alt="Teacher Signature"
                                         style={{
                                             display: "flex",
@@ -565,17 +570,32 @@ export default function ReportCardPage() {
                             </div>
 
                             <div style={{ textAlign: "center" }}>
-                                    <div
-                                    style={{
-                                        paddingTop: "0.5rem",
-                                        display: "inline-block",
-                                        minWidth: "200px",
-                                        borderTop: "2px solid #9ca3af",
-                                    }}
-                                    >
-                                        <p style={{ fontWeight: "600", color: "#111827" }}>{principalName}</p>
-                                        <p style={{ fontSize: "0.875rem", color: "#6b7280" }}>Principal</p>
-                                    </div>
+                                <div style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+                                    {principalSign && (
+                                        <img
+                                        src={principalSign}
+                                        alt="Principal Signature"
+                                        style={{
+                                            display: "flex",
+                                            margin: "0 auto",
+                                            width: "10rem",
+                                            height: "10rem",
+                                            marginBottom: "0.5rem",
+                                        }}
+                                        />
+                                    )}
+                                </div>
+                                <div
+                                style={{
+                                    paddingTop: "0.5rem",
+                                    display: "inline-block",
+                                    minWidth: "200px",
+                                    borderTop: "2px solid #9ca3af",
+                                }}
+                                >
+                                    <p style={{ fontWeight: "600", color: "#111827" }}>{principalName}</p>
+                                    <p style={{ fontSize: "0.875rem", color: "#6b7280" }}>Principal</p>
+                                </div>
                             </div>
                         </div>
 
