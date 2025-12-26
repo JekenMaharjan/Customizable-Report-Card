@@ -30,8 +30,8 @@ export default function ReportCardPage() {
         { name: "Physical Education", creditHour: "1", grade: "A+", remarks: "Outstanding" },
     ])
     
-    const [teacherName, setTeacherName] = useState("Mrs. Smith")
-    const [principalName, setPrincipalName] = useState("Dr. Johnson")
+    const [teacherName, setTeacherName] = useState("Mr. Shyam")
+    const [principalName, setPrincipalName] = useState("Dr. Chandra")
     const [teacherSign, setTeacherSign] = useState<string | null>(null);
     const [principalSign, setPrincipalSign] = useState<string | null>(null);
 
